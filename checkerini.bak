@@ -1,0 +1,60 @@
+[common]
+# Number of initial retries
+retries = 2
+# Recreation.gov username
+username = solesister3@gmail.com
+# Recreation.gov password
+password = Shoemom1
+# Number of seperate reservations
+num_reservations = 1
+
+[reservation_1]
+# Arrival Date in MM/DD/YYYY
+arv_date = 08/08/2021
+# Number of nights
+length_of_stay = 3
+# Number of campers
+num_occupants = 2
+# Number of vehicles
+num_vehicles = 1
+# Type of Equipment:
+# 0: None
+# 108068: Caravan/Camper Van
+# 108067: Fifth Wheel
+# 108660: Pickup Camper
+# 108061: Pop up
+# 108063: RV/Motorhome
+# 108060: Tent
+# 108661: Large Tent Over 9x12`
+# 108062: Trailer
+equipment_type = 108067
+# Parks & sites to search through:
+# See README.md for details on how
+# to find site IDs.
+#sites = [{'park_id':'70927', 'site_id':'203329'},{'park_id':'70928', 'site_id':'203306'},{'park_id':'70925', 'site_id':'203262'}]
+sites =[{'park_id':'345501','site_id':'4152'}]
+
+[reservation_2]
+# Arrival Date in MM/DD/YYYY
+arv_date = 08/08/2021
+# Number of nights
+length_of_stay = 3
+# Number of campers
+num_occupants = 2
+# Number of vehicles
+num_vehicles = 1
+# Type of Equipment:
+# 0: None
+# 108068: Caravan/Camper Van
+# 108067: Fifth Wheel
+# 108660: Pickup Camper
+# 108061: Pop up
+# 108063: RV/Motorhome
+# 108060: Tent
+# 108661: Large Tent Over 9x12`
+# 108062: Trailer
+equipment_type = 108067
+# Parks & sites to search through:
+# See README.md for details on how
+# to find site IDs.
+sites = [{'park_id':'345501','site_id':'4152'}]
