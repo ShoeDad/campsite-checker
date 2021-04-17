@@ -1,16 +1,31 @@
-#!/usr/bin/env python
-
 import os
 import ast
-import ConfigParser
+import configparser
+import pprint
+import time
+import pause
+import datetime
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 
-config = ConfigParser.ConfigParser()
 
+#from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
+
+
+
+path="C:\\Work\\python\\browserdriver\\chromedriver.exe"
+driver=webdriver.Chrome(path)
+driver.get("http://www.recreation.gov")
+driver.maximize_window()
+#driver.close()
+#driver.quit()
+
+config = configparser.ConfigParser()
 config.read('checker.ini')
 
 # The idea is that we will loop through each reservation page
@@ -24,19 +39,25 @@ USERNAME = config.get("common", "username")
 PASSWORD = config.get("common", "password")
 NUM_RESERVATIONS = int(config.get("common", "num_reservations"))
 
-firefoxProfile = FirefoxProfile()
-firefoxProfile.set_preference('browser.migration.version', 9001)
-firefoxProfile.set_preference('permissions.default.image', 2)
-firefoxProfile.set_preference('dom.ipc.plugins.enabled.libflashplayer.so', 'false')
+#firefoxProfile = FirefoxProfile()
+#firefoxProfile.set_preference('browser.migration.version', 9001)
+#firefoxProfile.set_preference('permissions.default.image', 2)
+#firefoxProfile.set_preference('dom.ipc.plugins.enabled.libflashplayer.so', 'false')
 
 def checksites():
+	dt = datetime.datetime(2021, 4, 16, 00, 31, 00, 000000)
+	pause.until(dt)
 	site_ready = False
 	num_retries = 0
-
+	tab_num = 0
 	# Loop through sites
 	for site in SITES:
 
 		url = url_request.format(**site)
+		#open tab
+		tab_num += 1
+		driver.execute_script("window.open('');")
+		driver.switch_to.window(driver.window_handles[tab_num])
 		driver.get(url)
 
 		# First check if this is reservable yet - refresh if it's not
@@ -91,8 +112,8 @@ for i in range(NUM_RESERVATIONS):
 
 	count = str(i + 1)
 
-	driver = webdriver.Firefox(firefoxProfile)
-	driver.maximize_window()
+	#driver = webdriver.Chrome(path)
+	#driver.maximize_window()
 
 	ARV_DATE = config.get("reservation_" + count, "arv_date")
 	LENGTH_OF_STAY = config.get("reservation_" + count, "length_of_stay")
@@ -101,10 +122,10 @@ for i in range(NUM_RESERVATIONS):
 	EQUIPMENT_TYPE = config.get("reservation_" + count, "equipment_type")
 	SITES = ast.literal_eval(config.get("reservation_" + count, "sites"))
 
-	print SITES
+	print(SITES)
 
-	url_request = 'http://www.recreation.gov/campsiteDetails.do?siteId={site_id}&contractCode=NRSO&parkId={park_id}&arvdate=' + ARV_DATE + '&lengthOfStay=' + LENGTH_OF_STAY
-
+	#url_request = 'http://www.recreation.gov/campsiteDetails.do?siteId={site_id}&contractCode=NRSO&parkId={park_id}&arvdate=' + ARV_DATE + '&lengthOfStay=' + LENGTH_OF_STAY
+	url_request = 'https://utahstateparks.reserveamerica.com/campsiteDetails.do?contractCode=UT&siteId={site_id}&parkId={park_id}&arvdate=' + ARV_DATE + '&lengthOfStay=' + LENGTH_OF_STAY
 	# Check if sites are available yet - if not refresh
 
 	# Find an available site
@@ -119,16 +140,16 @@ for i in range(NUM_RESERVATIONS):
 
 		# Check to see if we got an error, if so refresh
 		WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#contentArea')))
-		noerrors = checkerrors();
+		noerrors = checkerrors()
 
 		if (noerrors):
 			# Enter username
 			username_field = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#emailGroup input')))
-			username_field.send_keys(USERNAME);
+			username_field.send_keys(USERNAME)
 
 			# Enter password
 			password_field = driver.find_element_by_css_selector('#passwrdGroup input')
-			password_field.send_keys(PASSWORD);
+			password_field.send_keys(PASSWORD)
 
 			# Click login button
 			driver.find_element_by_name('submitForm').click()
@@ -150,7 +171,7 @@ for i in range(NUM_RESERVATIONS):
 			# Click "Continue to Shopping Cart" button
 			driver.find_element_by_id('continueshop').click()
 
-			print "You have 15 minutes to complete this reservation in the browser window."
+			print('You have 15 minutes to complete this reservation in the browser window.')
 			
 		else:
 			print('No available sites. (L2)')
